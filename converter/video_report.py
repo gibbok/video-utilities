@@ -1,7 +1,55 @@
 import os
 import csv
+import subprocess
+import json
 from pathlib import Path
 from datetime import datetime
+
+def get_video_codec(file_path):
+    """
+    Extract video codec information using ffprobe.
+    Returns codec name (e.g., 'H.264 (AVC)', 'HEVC (H.265)') or 'Unknown' if unable to detect.
+    """
+    try:
+        result = subprocess.run(
+            [
+                'ffprobe',
+                '-v', 'quiet',
+                '-print_format', 'json',
+                '-show_streams',
+                '-select_streams', 'v:0',  # Select first video stream
+                str(file_path)
+            ],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        
+        if result.returncode == 0:
+            data = json.loads(result.stdout)
+            if data.get('streams') and len(data['streams']) > 0:
+                codec_name = data['streams'][0].get('codec_name', 'Unknown')
+                codec_long_name = data['streams'][0].get('codec_long_name', '')
+                
+                # Map common codec names to more readable formats
+                codec_map = {
+                    'h264': 'H.264 (AVC)',
+                    'hevc': 'HEVC (H.265)',
+                    'vp9': 'VP9',
+                    'vp8': 'VP8',
+                    'av1': 'AV1',
+                    'mpeg4': 'MPEG-4',
+                    'mpeg2video': 'MPEG-2',
+                    'wmv3': 'WMV',
+                    'mjpeg': 'Motion JPEG',
+                    'prores': 'ProRes'
+                }
+                
+                return codec_map.get(codec_name.lower(), codec_name.upper())
+        
+        return 'Unknown'
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception):
+        return 'Unknown'
 
 def find_videos_and_report(target_folder, output_csv):
     """
@@ -15,6 +63,7 @@ def find_videos_and_report(target_folder, output_csv):
     }
     
     video_data = []
+    processed_count = 0
 
     # Walk through the directory recursively
     print(f"Scanning {target_folder} for video files...")
@@ -26,6 +75,9 @@ def find_videos_and_report(target_folder, output_csv):
             # Check if file extension is a video format
             if file_path.suffix.lower() in video_extensions:
                 try:
+                    processed_count += 1
+                    print(f"[{processed_count}] Processing: {file_path.name}")
+                    
                     stats = file_path.stat()
                     
                     # Calculate size in MB
@@ -36,9 +88,13 @@ def find_videos_and_report(target_folder, output_csv):
                     creation_time = getattr(stats, 'st_birthtime', stats.st_ctime)
                     creation_date = datetime.fromtimestamp(creation_time).strftime('%Y-%m-%d %H:%M:%S')
                     
+                    # Get video codec
+                    codec = get_video_codec(file_path)
+                    
                     video_data.append({
                         'path': str(file_path.absolute()),
                         'size_mb': size_mb,
+                        'codec': codec,
                         'date_created': creation_date
                     })
                 except Exception as e:
@@ -52,10 +108,10 @@ def find_videos_and_report(target_folder, output_csv):
         with open(output_csv, mode='w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
             # Write headers
-            writer.writerow(['File Location Path', 'Size (MB)', 'Date of Creation'])
+            writer.writerow(['File Location Path', 'Size (MB)', 'Codec', 'Date of Creation'])
             # Write data rows
             for video in video_data:
-                writer.writerow([video['path'], video['size_mb'], video['date_created']])
+                writer.writerow([video['path'], video['size_mb'], video['codec'], video['date_created']])
             
         print(f"Successfully created: {output_csv}")
         print(f"Total videos found: {len(video_data)}")
