@@ -48,14 +48,14 @@ def find_videos_and_report(target_folder, output_csv):
     video_data.sort(key=lambda x: x['size_mb'], reverse=True)
 
     # Write to CSV
-    headers = ['File Location Path', 'Size (MB)', 'Date of Creation']
-    
     try:
         with open(output_csv, mode='w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=['path', 'size_mb', 'date_created'])
-            # Write custom headers
-            f.write(','.join(headers) + '\n')
-            writer.writerows(video_data)
+            writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+            # Write headers
+            writer.writerow(['File Location Path', 'Size (MB)', 'Date of Creation'])
+            # Write data rows
+            for video in video_data:
+                writer.writerow([video['path'], video['size_mb'], video['date_created']])
             
         print(f"Successfully created: {output_csv}")
         print(f"Total videos found: {len(video_data)}")
