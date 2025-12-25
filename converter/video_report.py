@@ -4,6 +4,10 @@ from pathlib import Path
 from datetime import datetime
 
 def find_videos_and_report(target_folder, output_csv):
+    """
+    Scan a folder for video files and generate a report.
+    Usage: python3 video_report.py <folder_path> [output_csv]
+    """
     # Common video extensions
     video_extensions = {
         '.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v',
