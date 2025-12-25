@@ -1,7 +1,8 @@
 # Video utilities
 
-1. Convert Video to Static Images  
-2. Convert Video to H265  
+1. Convert Video to Static Images
+2. Convert Video to H265
+3. Report a video inventory
 
 ### Prerequisites
 
@@ -13,6 +14,7 @@
    - **Windows:** Download from [ffmpeg.org](https://ffmpeg.org/download.html) and add it to your `PATH`.
 
 #### Installation
+
 1. Clone this repository:
    ```bash
    git clone https://github.com/gibbok/video-utilities.git
@@ -20,11 +22,11 @@
 2. Navigate to the project folder:
    ```bash
    cd video-utilities/converter
-   ``` 
+   ```
 3. Install dependencies:
    ```bash
    poetry install
-   ``` 
+   ```
 
 ## Convert Video to Static Images
 
@@ -41,7 +43,7 @@ Run the script with the following arguments:
 1. **Input video file:** Path to the video file (e.g., `/path/to/video.mkv`).
 2. **Output folder:** Directory where screenshots will be saved (e.g., `/path/to/output/folder`).
 3. **Interval (optional):** Time in seconds between screenshots (default is 5 seconds).
-Example:
+   Example:
 
 ```bash
 poetry run python extract_screenshots.py /path/to/video.mkv /path/to/output/folder --interval 5
