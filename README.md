@@ -38,15 +38,8 @@ This project allows you to extract static images (screenshots) from a video file
 
 ### Usage
 
-Run the script with the following arguments:
-
-1. **Input video file:** Path to the video file (e.g., `/path/to/video.mkv`).
-2. **Output folder:** Directory where screenshots will be saved (e.g., `/path/to/output/folder`).
-3. **Interval (optional):** Time in seconds between screenshots (default is 5 seconds).
-   Example:
-
 ```bash
-uv run extract_screenshots.py /path/to/video.mkv /path/to/output/folder --interval 5
+make extract INPUT=/path/to/video.mkv OUTPUT=/path/to/output/folder INTERVAL=10
 ```
 
 The screenshots will be saved in the specified output folder as `.png` files, named sequentially.
@@ -57,18 +50,21 @@ Compress a video to H265 format with medium settings.
 
 ### Usage
 
-Run the script with the following arguments:
-
-1. **Input video file:** Path to the video file (e.g., `/path/to/video.mkv`).
-2. **Output folder:** Directory where the final video will be saved (e.g., `/output`).
-
-Use as:
-
 ```bash
-uv run compress_h265.py "/input.mkv" "/output"
+make compress INPUT=/path/to/video.mkv OUTPUT=/output
 ```
 
 Notes: the script will save the output in `.mkv` format.
+
+## Report a Video Inventory
+
+Generate a CSV report of all video files in a directory with codec information and file sizes.
+
+### Usage
+
+```bash
+make report FOLDER=/path/to/videos OUTPUT=inventory.csv
+```
 
 ### License
 
