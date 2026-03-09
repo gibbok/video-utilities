@@ -6,8 +6,8 @@
 
 ### Prerequisites
 
-1. Ensure you have Python installed (version 3.8+ recommended).
-2. Install [Poetry](https://python-poetry.org/) for dependency management.
+1. Ensure you have Python installed (version 3.12+ recommended).
+2. Install [uv](https://docs.astral.sh/uv/) for dependency management.
 3. Install FFmpeg, as it is required for processing video files. Follow the instructions for your operating system:
    - **Linux:** `sudo apt install ffmpeg`
    - **macOS (Homebrew):** `brew install ffmpeg`
@@ -21,11 +21,11 @@
    ```
 2. Navigate to the project folder:
    ```bash
-   cd video-utilities/converter
+   cd video-utilities
    ```
 3. Install dependencies:
    ```bash
-   poetry install
+   uv sync
    ```
 
 ## Convert Video to Static Images
@@ -46,7 +46,7 @@ Run the script with the following arguments:
    Example:
 
 ```bash
-poetry run python extract_screenshots.py /path/to/video.mkv /path/to/output/folder --interval 5
+uv run extract_screenshots.py /path/to/video.mkv /path/to/output/folder --interval 5
 ```
 
 The screenshots will be saved in the specified output folder as `.png` files, named sequentially.
@@ -65,7 +65,7 @@ Run the script with the following arguments:
 Use as:
 
 ```bash
-poetry run python compress_h265.py "/input.mkv" "/output"
+uv run compress_h265.py "/input.mkv" "/output"
 ```
 
 Notes: the script will save the output in `.mkv` format.
